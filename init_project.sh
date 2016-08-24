@@ -6,13 +6,13 @@
 # Co-autor  : Michel        <michel.rodrigues86@yahoo.com.br>
 # Manutenção: Ambos
 #
-#---------------------------------------------------------------------
+#--------------------------------------------------------------------
 #
 # Este programa configura toda a parte inicial de um projeto django
 # desde a criação da pasta do projeto na HOME do sistema linux até
 # a instalação e configurações basicas do django.
 #
-#---------------------------------------------------------------------
+#--------------------------------------------------------------------
 #
 # Histórico:
 #
@@ -29,17 +29,49 @@
 #
 #
 
-#-----------------------------[ funções ]-----------------------------
-# TODO conferir função ambience()
+#-----------------------------[FUNÇÕES]----------------------------
+
+django(){       
+
+    # conferir se versão foi fornecida
+    if [ "$3" ]
+        then
+            pip install django=="$3" # instalar o django. 
+
+    else
+        pip install django  # instala a ultima versão estável
+    fi
+
+#-----------------------[ projeto django]----------------------------
+    
+    django-admin.py startproject "$2" # iniciar projeto django
+
+    cd "$2"/
+
+    python manage.py makemigrations # criar as tabelas.
+    
+    python manage.py migrate        # enviar para o banco de dados.
+# XXX O comando syncdb não existe mais.
+}
+
 ambience(){
 
-    [ "$AMBIENTE" ]||{
-        echo "Ops! Esqueceu de preencher a variavel AMBIENTE."
+    [ "$2" ]||{
+        echo "Ops! Esqueceu colocar o nome do AMBIENTE."
         exit 1
     }
             
-    mkdir -p "$AMBIENTE"/code  # nome da pasta fornecido pelo usuario
-    cd "$AMBIENTE"/code
+    mkdir -p "$2"/code  # nome da pasta fornecido pelo usuario
+    cd "$2"/code
+
+#-----------------[criar e ativar ambiente virtual]------------------
+
+# XXX virtualwrapper é instalado junto com o virtualenv.
+
+    mkvirtualenv "$2"     # criar um ambiente virtual.
+    workon "$2"           # ativar o ambiente virtual.
+
+# XXX O comando workon sozinho lista os ambientes disponíveis.
 
 }
 
@@ -72,7 +104,8 @@ do
         -a | --ambience)
            
                     ambience "$2"
-            
+                    django "$3"
+
             exit 0
         ;;
 
@@ -94,33 +127,3 @@ do
 
 done
 
-
-# TODO refazer tudo daqui para baixo
-
-django(){       
-#--------------------------[ funções ]--------------------------------
-
-    [ "$VERSAO_DJANGO" ]||{
-        pip install django  # instala a ultima versão estável
-    }
-
-#-----------------[criar e ativar ambiente virtual]-------------------
-
-# XXX virtualwrapper é instalado junto com o virtualenv.
-
-    mkvirtualenv "$AMBIENTE"     # criar um ambiente virtual.
-    workon "$AMBIENTE"           # ativar o ambiente virtual.
-
-# XXX O comando workon sozinho lista os ambientes disponíveis.
-
-#-----------------------[ projeto django]-----------------------------
-
-    pip install django=="$VERSAO_DJANGO" # instalar o django. 
-    
-    django-admin.py startproject "$AMBIENTE" # iniciar projeto django
-
-    python manage.py makemigrations # criar as tabelas.
-    
-    python manage.py migrate        # enviar para o banco de dados.
-# XXX O comando syncdb não existe mais.
-}
