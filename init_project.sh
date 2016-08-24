@@ -26,7 +26,8 @@
 #       - Implementação de verificação de variaveis globais
 #       - retirada do comando su
 #       
-#
+#   201624081508: João Paulo, Agosto de 2016
+#       - Implementação das funções django() e ambience()
 #
 
 #-----------------------------[FUNÇÕES]----------------------------
