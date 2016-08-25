@@ -29,15 +29,26 @@
 #   201624081508: João Paulo, Agosto de 2016
 #       - Implementação das funções django() e ambience()
 #
+#   201625081156: João Paulo, Agosto de 2016
+#       - Alterações na função ambience()
+#       - TODO problemas com os comando mkvirtulaenv e workon
+#       - XXX Função django esta comentada devido aos problemas acima 
+
+DIRETORIO="$2"
+VERSAO_DJANGO="$3"
 
 #-----------------------------[FUNÇÕES]----------------------------
 
 django(){       
 
+   # mkvirtualenv  "$DIRETORIO"  # criar um ambiente virtual.
+   # workon "$DIRETORIO"  # ativar o ambiente virtual.
+    
+
     # conferir se versão foi fornecida
-    if [ "$3" ]
+    if [ "$VERSAO_DJANGO" ]
         then
-            pip install django=="$3" # instalar o django. 
+            pip install django=="$VERSAO_DJANGO" # instalar o django. 
 
     else
         pip install django  # instala a ultima versão estável
@@ -47,7 +58,7 @@ django(){
     
     django-admin.py startproject "$2" # iniciar projeto django
 
-    cd "$2"/
+    # cd "$DIRETORIO"
 
     python manage.py makemigrations # criar as tabelas.
     
@@ -57,20 +68,21 @@ django(){
 
 ambience(){
 
-    [ "$2" ]||{
+    [ "$DIRETORIO" ]||{
         echo "Ops! Esqueceu colocar o nome do AMBIENTE."
         exit 1
     }
             
-    mkdir -p "$2"/code  # nome da pasta fornecido pelo usuario
-    cd "$2"/code
+    mkdir -p "$DIRETORIO" . 
+    
+    cd "$HOME/$DIRETORIO" 
 
 #-----------------[criar e ativar ambiente virtual]------------------
 
 # XXX virtualwrapper é instalado junto com o virtualenv.
 
-    mkvirtualenv "$2"     # criar um ambiente virtual.
-    workon "$2"           # ativar o ambiente virtual.
+   # mkvirtualenv  "$DIRETORIO"  # criar um ambiente virtual.
+   # workon "$DIRETORIO"  # ativar o ambiente virtual.
 
 # XXX O comando workon sozinho lista os ambientes disponíveis.
 
@@ -104,8 +116,8 @@ do
 
         -a | --ambience)
            
-                    ambience "$2"
-                    django "$3"
+                    ambience 
+                    #django 
 
             exit 0
         ;;
